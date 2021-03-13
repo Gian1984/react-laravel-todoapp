@@ -3,43 +3,77 @@ import ReactDOM from 'react-dom';
 import Header from './components/Header'
 import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
+import axios from 'axios'
+import { get } from 'lodash';
 
 function Index() {
+
 
     const [showAddTask, setShowAddTask] = useState (false) 
 
     const [tasks, setTask] = useState  ([
-        {
-            id:'1',
-            text:'Doctor',
-            day:'1st Feb 2021',
-            reminder:'true'
-        },
-        {
-            id:'2',
-            text:'Meeting',
-            day:'2nd Feb 2021',
-            reminder:'false'
-        },
-        {
-            id:'3',
-            text:'Food shopping',
-            day:'3rd Feb 2021',
-            reminder:'true'
-        }
+        
+        // {
+        //     id:'1',
+        //     text:'Doctor',
+        //     day:'1st Feb 2021',
+        //     reminder:'true'
+        // },
+        // {
+        //     id:'2',
+        //     text:'Meeting',
+        //     day:'2nd Feb 2021',
+        //     reminder:'false'
+        // },
+        // {
+        //     id:'3',
+        //     text:'Food shopping',
+        //     day:'3rd Feb 2021',
+        //     reminder:'true'
+        // }
     
-    ])
-    // rafce
-    const addTask=(task)=>{
-        const id = Math.floor(Math.random()*10000) +1
-        const newTask = {id, ...task}
-        setTask([...tasks, newTask])
+    ]);
+
+    // fetch to get data 
+
+    useEffect(() => {
+        const getTasks = async ()=> {
+            const tasksFromServer = await fetchTasks()
+            setTask(tasksFromServer)
+        }
+        getTasks()
+    }, [] )
+   
+    const fetchTasks = async () => {
+        const res = await fetch('api/tasks')  
+        const data = await res.json() 
+
+        return data
+    }
+
+    // Adding a random id to add a task 
+    const addTask= async (task)=>{
+        // const id = Math.floor(Math.random()*10000) +1
+        // const newTask = {id, ...task}
+        // setTask([...tasks, newTask])
+        const res = await fetch('api/tasks',{
+            method: 'POST',
+            headers:{
+                "Content-Type": "application/json"},
+            body: JSON.stringify(task),    
+        })
+
+        
+            const data = await res.json()
+            
+            setTask([...tasks, data])
     }
 
 
-
-    const deleteTask=(id)=>{
+    // delete task
+    const deleteTask= async (id)=>{
+        await fetch(`api/tasks/${id}`,{method: 'DELETE'})
         setTask(tasks.filter((task)=>task.id !== id))
     }
 
