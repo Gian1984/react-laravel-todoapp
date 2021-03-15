@@ -52,6 +52,15 @@ function Index() {
         return data
     }
 
+    // fetch single task
+    // const fetchTask = async (id) => {
+    //     const res = await fetch(`api/tasks/${id}`)  
+    //     const data = await res.json() 
+
+    //     return data
+
+    // }
+
     // Adding a random id to add a task 
     const addTask= async (task)=>{
         // const id = Math.floor(Math.random()*10000) +1
@@ -63,10 +72,7 @@ function Index() {
                 "Content-Type": "application/json"},
             body: JSON.stringify(task),    
         })
-
-        
             const data = await res.json()
-            
             setTask([...tasks, data])
     }
 
@@ -77,7 +83,22 @@ function Index() {
         setTask(tasks.filter((task)=>task.id !== id))
     }
 
-    const toggleReminder=(id)=>{
+    // update task
+
+    const toggleReminder= async (id, task)=>{
+        // const taskToToggle = await fetchTask(id)
+        // const updTask = {taskToToggle, reminder: !taskToToggle.reminder}
+        const updTask = {...task, reminder: !task.reminder}
+
+        const res = await fetch(`api/tasks/${id}`,{
+            method:'PUT',
+            headers:{
+                'Content-Type': 'application/json',           
+            },
+                body: JSON.stringify(updTask),
+            })
+
+        const data = await res.json()
         setTask(tasks.map((task)=>task.id === id ?
         {...task, reminder: !task.reminder} : task
         ))
@@ -92,6 +113,7 @@ function Index() {
                     <Header onAdd={()=>setShowAddTask(!showAddTask)}></Header>
                 </div>
                 <div className="card-body">
+                    <h4>In yellow you have the todo tasks, double click when the one task get done! </h4>
                 {/* showAddTask is on false and this is ternary to say if it's false dont show it     */}
                 { showAddTask && <AddTask onAdd={addTask}></AddTask>}
                     {tasks.length > 0 ? <Tasks 

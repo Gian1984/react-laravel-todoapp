@@ -23,7 +23,7 @@ class TaskController extends Controller
             'reminder'=>$request->reminder,
             
         ]);
-        
+
         return response()->json($task);
 
     }
@@ -39,8 +39,16 @@ class TaskController extends Controller
     public function update(Request $request, $id){
 
     
-        Task::where('id', $id)->update(array('status' => $request->status));
-        
+        $reminder = Task::where('id', $id)->update(['reminder' => $request->reminder]);
+        return response()->json($reminder);
+
+        // $reminder = Task::where('id', $id)->update(['reminder' => true]);
+        // return response()->json(['success' => 'Done']);
+
+        // $reminder = Task::findOrFail($id)->update(['reminder' => $request->reminder]);
+        // $reminder->reminder = $request['reminder'];
+        // $reminder->save(); 
+        // return response()->json($reminder);
     }
 
     public function destroy($id)

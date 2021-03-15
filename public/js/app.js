@@ -2002,7 +2002,13 @@ function Index() {
     return function fetchTasks() {
       return _ref2.apply(this, arguments);
     };
-  }(); // Adding a random id to add a task 
+  }(); // fetch single task
+  // const fetchTask = async (id) => {
+  //     const res = await fetch(`api/tasks/${id}`)  
+  //     const data = await res.json() 
+  //     return data
+  // }
+  // Adding a random id to add a task 
 
 
   var addTask = /*#__PURE__*/function () {
@@ -2071,15 +2077,55 @@ function Index() {
     return function deleteTask(_x2) {
       return _ref4.apply(this, arguments);
     };
-  }();
+  }(); // update task
 
-  var toggleReminder = function toggleReminder(id) {
-    setTask(tasks.map(function (task) {
-      return task.id === id ? _objectSpread(_objectSpread({}, task), {}, {
-        reminder: !task.reminder
-      }) : task;
+
+  var toggleReminder = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(id, task) {
+      var updTask, res, data;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              // const taskToToggle = await fetchTask(id)
+              // const updTask = {taskToToggle, reminder: !taskToToggle.reminder}
+              updTask = _objectSpread(_objectSpread({}, task), {}, {
+                reminder: !task.reminder
+              });
+              _context5.next = 3;
+              return fetch("api/tasks/".concat(id), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updTask)
+              });
+
+            case 3:
+              res = _context5.sent;
+              _context5.next = 6;
+              return res.json();
+
+            case 6:
+              data = _context5.sent;
+              setTask(tasks.map(function (task) {
+                return task.id === id ? _objectSpread(_objectSpread({}, task), {}, {
+                  reminder: !task.reminder
+                }) : task;
+              }));
+
+            case 8:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
     }));
-  };
+
+    return function toggleReminder(_x3, _x4) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
 
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
     className: "container mt-5",
@@ -2094,7 +2140,9 @@ function Index() {
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
         className: "card-body",
-        children: [showAddTask && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_AddTask__WEBPACK_IMPORTED_MODULE_5__.default, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h4", {
+          children: "In yellow you have the todo tasks, double click when the one task get done! "
+        }), showAddTask && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_AddTask__WEBPACK_IMPORTED_MODULE_5__.default, {
           onAdd: addTask
         }), tasks.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Tasks__WEBPACK_IMPORTED_MODULE_4__.default, {
           tasks: tasks,
@@ -2416,7 +2464,7 @@ var Task = function Task(_ref) {
       onToggle = _ref.onToggle;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     onDoubleClick: function onDoubleClick() {
-      return onToggle(task.id);
+      return onToggle(task.id, task);
     },
     className: "".concat(task.reminder ? 'alert alert-warning ' : 'alert alert-success', " "),
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h5", {
